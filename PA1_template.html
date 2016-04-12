@@ -159,6 +159,10 @@ median_nds&lt;-as.numeric(median(ndailySteps, na.rm=T))</code></pre>
 </div>
 <div id="are-there-differences-in-activity-patterns-between-weekdays-and-weekends" class="section level2">
 <h2>Are there differences in activity patterns between weekdays and weekends?</h2>
+<pre class="r"><code>whichday&lt;-weekdays(as.Date(nData$date)) #Find the day of the week from date
+whichday[grep(&quot;Saturday|Sunday&quot;, whichday)]&lt;-&quot;weekend&quot;
+whichday[grep(&quot;Monday|Tuesday|Wednesday|Thursday|Friday&quot;, whichday)]&lt;-&quot;weekday&quot;
+nData&lt;-cbind(nData,day=whichday) # Add new variable to the dataset</code></pre>
 </div>
 
 

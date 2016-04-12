@@ -77,3 +77,10 @@ The mean total number of steps taken per day is 10598.95 and the median value ca
 The mean and median values are lower. Thus imputing missing values has the impact of lowering the mean and median values of total number of steps per day.
 
 ## Are there differences in activity patterns between weekdays and weekends?
+
+```r
+whichday<-weekdays(as.Date(nData$date)) #Find the day of the week from date
+whichday[grep("Saturday|Sunday", whichday)]<-"weekend"
+whichday[grep("Monday|Tuesday|Wednesday|Thursday|Friday", whichday)]<-"weekday"
+nData<-cbind(nData,day=whichday) # Add new variable to the dataset
+```
