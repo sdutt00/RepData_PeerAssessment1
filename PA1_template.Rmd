@@ -69,5 +69,19 @@ whichday<-weekdays(as.Date(nData$date)) #Find the day of the week from date
 whichday[grep("Saturday|Sunday", whichday)]<-"weekend"
 whichday[grep("Monday|Tuesday|Wednesday|Thursday|Friday", whichday)]<-"weekday"
 nData<-cbind(nData,day=whichday) # Add new variable to the dataset
-
-
+```
+Here the average number of steps taken for each 5 minute interval for weekdays and weekends will be calculated using the aggregate() function. 
+```{r panel}
+nwkdays<-sum(nData$day=="weekday")/length(intervalSteps)
+nwkends<-sum(nData$day=="weekend")/length(intervalSteps)
+weekdata<-aggregate(steps ~ interval+day, mean, data=nData)
+```
+Here is the plot of the average steps taken for each 5 min interval during weekdays and weekends.
+```{r plot}
+library(ggplot2)
+ggplot(weekdata, aes(y=steps, x=interval)) + geom_line(aes(col=day)) + 
+  facet_grid(day~ .) + 
+  ggtitle("Comparison of average steps taken between weekdays and weekends") + 
+  xlab("5 min Intervals") + 
+  ylab("Average number of steps taken")
+```
