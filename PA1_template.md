@@ -16,7 +16,7 @@ dailySteps<-by(aData$steps, aData$date, sum)
 The histogram of the total number of steps taken per day is shown below.
 
 ```r
-hist(dailySteps, breaks=50, main="Histogram of Total Steps taken per day", xlab="Total Steps per Day")
+hist(dailySteps, breaks=50, main="Histogram of Total Steps taken per day", xlab="Total Steps per Day", col ="blue")
 ```
 
 ![](PA1_template_files/figure-html/dailysteps_hist-1.png)
@@ -31,9 +31,8 @@ The mean total number of steps taken per day is 10766.19 and the median value ca
 The total number of steps taken for every 5 minute interval during the day is calculated in the variable *intervalSteps*. Here is the plot of the average number of steps taken for each 5 minute interval in a day, averaged across all days. Intervals with NA values were ignored in calculating the total steps during each interval.
 
 ```r
-intervalSteps<-by(aData$steps, aData$interval, function(x) sum(data=x, na.rm=T))
-totalDays<-nlevels(aData$date)
-plot(x=names(intervalSteps), y=intervalSteps/totalDays, type='l', main="Daily Average Activity Pattern for Steps", xlab="5-min Intervals in a Day", ylab="Average Number of Steps")
+intervalSteps<-by(aData$steps, aData$interval, function(x) mean(x, na.rm=T))
+plot(x=names(intervalSteps), y=intervalSteps, type='l', main="Daily Average Activity Pattern for Steps", xlab="5-min Intervals in a Day", ylab="Average Number of Steps")
 ```
 
 ![](PA1_template_files/figure-html/avg_steps-1.png)
@@ -55,7 +54,7 @@ nsteps<-aData$steps # Store steps as it is first into new variable
 index<-is.na(aData$steps)==T # Index of all where steps is NA
 #Find the index of corresponding interval when steps is NA in the intervalSteps list
 #Now take that value from intervalSteps, divide by TotalDays and round it.
-nsteps[index]<-round(intervalSteps[match(aData$interval[index],names(intervalSteps))]/totalDays + 0.5)
+nsteps[index]<-round(intervalSteps[match(aData$interval[index],names(intervalSteps))] + 0.5)
 # new data frame with new values of steps without any NA
 nData <- data.frame(steps=nsteps, date=aData$date, interval=aData$interval)
 ```
@@ -64,7 +63,7 @@ Here is the new histogram of the total number of steps taken per day after the N
 
 ```r
 ndailySteps<-by(nData$steps, nData$date, sum)
-hist(ndailySteps, breaks=50, main="Histogram of Total Steps taken per day (after imputing)", xlab="Total Steps per Day")
+hist(ndailySteps, breaks=50, main="Histogram of Total Steps taken per day (after imputing)", xlab="Total Steps per Day", col="red")
 ```
 
 ![](PA1_template_files/figure-html/new_hist-1.png)
@@ -73,8 +72,8 @@ hist(ndailySteps, breaks=50, main="Histogram of Total Steps taken per day (after
 mean_nds<-as.numeric(mean(ndailySteps, na.rm=T))
 median_nds<-as.numeric(median(ndailySteps, na.rm=T))
 ```
-The mean total number of steps taken per day is 10598.95 and the median value calculated is 10395.
-The mean and median values are lower. Thus imputing missing values has the impact of lowering the mean and median values of total number of steps per day.
+The mean total number of steps taken per day is 10785.05 and the median value calculated is 10910.
+Due to imputing missing values the mean value has remained almost the same but the median values of total number of steps per day was slightly higher.
 
 ## Are there differences in activity patterns between weekdays and weekends?
 
