@@ -10,6 +10,7 @@ output:
 
 The data is loaded from the *"activity.csv"* file by using read.csv() into a data frame *aData*. There are 3 variables and 17568 observations. The variables are steps, date and interval. The total number of steps taken per day is calculated by preprocessing the data and stored in the variable *dailySteps*. The variable steps is summed for each date in the dataset. 
 ```{r}
+options(scipen=999, digits=2)
 aData<-read.csv("activity.csv")
 dailySteps<-by(aData$steps, aData$date, sum)
 ```
@@ -39,7 +40,7 @@ The number of missing values (NA) in the variable steps are calculated here.
 ```{r}
 sum(is.na(aData$steps))
 ```
-It was decided to impute the missing values for steps by replacing the value for a 5 min interval on a particular day with the average of the 5 min intervals across all days which is available from the variable *intervalSteps*. The index where *steps* is NA is obtained first. Then the *aData$interval* value for where *aData$steps* is NA is found and matched to the index of *intervalSteps*. This means we now have a valid total number of steps value for that interval where *steps* was NA. Next this value is averaged by total number of days, rounded and used to replace the original steps value of NA in a new data frame.
+It was decided to impute the missing values for steps by replacing the value for a 5 min interval on a particular day with the average of the 5 min intervals across all days which is available from the variable *intervalSteps*. The index where *steps* is NA is obtained first. Then the *interval* value for where *steps* is NA is found and matched to the index of *intervalSteps*. This means we now have a valid total number of steps value for that interval where *steps* was NA. Next this value is averaged by total number of days, rounded and used to replace the original steps value of NA in a new data frame.
 ```{r imputeSteps}
 nsteps<-aData$steps # Store steps as it is first into new variable
 index<-is.na(aData$steps)==T # Index of all where steps is NA
@@ -48,7 +49,18 @@ index<-is.na(aData$steps)==T # Index of all where steps is NA
 nsteps[index]<-round(intervalSteps[match(aData$interval[index],names(intervalSteps))]/totalDays + 0.5)
 # new data frame with new values of steps without any NA
 nData <- data.frame(steps=nsteps, date=aData$date, interval=aData$interval)
-
 ```
+
+Here is the new histogram of the total number of steps taken per day after the NA values in steps has been replaced by the new strategy of imputing data.
+```{r new_hist, fig.height=4}
+ndailySteps<-by(nData$steps, nData$date, sum)
+hist(ndailySteps, breaks=50, main="Histogram of Total Steps taken per day (after imputing)", xlab="Total Steps per Day")
+```
+```{r new_mean}
+mean_nds<-as.numeric(mean(ndailySteps, na.rm=T))
+median_nds<-as.numeric(median(ndailySteps, na.rm=T))
+```
+The mean total number of steps taken per day is `r mean_nds` and the median value calculated is `r median_nds`.
+The mean and median values are lower. Thus imputing missing values has the impact of lowering the mean and median values of total number of steps per day.
 
 ## Are there differences in activity patterns between weekdays and weekends?
