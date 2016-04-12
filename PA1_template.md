@@ -8,6 +8,8 @@ The data is loaded from the *"activity.csv"* file by using read.csv() into a dat
 ```r
 aData<-read.csv("activity.csv")
 dailySteps<-by(aData$steps, aData$date, sum)
+intervalSteps<-by(aData$steps, aData$interval, function(x) sum(data=x, na.rm=T))
+totalDays<-nlevels(aData$date)
 ```
 
 ## What is mean total number of steps taken per day?
@@ -27,6 +29,13 @@ median_ds<-median(dailySteps, na.rm=T)
 The mean total number of steps taken per day is 1.0766189\times 10^{4} and the median value calculated is 10765.
 
 ## What is the average daily activity pattern?
+Here is the plot of the average number of steps taken for each 5 minute interval in a day, averaged across all days. Intervals with NA values were ignored in calculating the total steps during each interval.
+
+```r
+plot(x=names(intervalSteps), y=intervalSteps/totalDays, type='l', main="Daily Average Activity Pattern for Steps", xlab="5-min Intervals in a Day", ylab="Average Number of Steps")
+```
+
+![](PA1_template_files/figure-html/avg_steps-1.png)
 
 
 
